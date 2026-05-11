@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Code Academy — HTML &amp; CSS</title>
+
+  <!-- CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════ SCREEN: HOME ═══════════════════════ -->
+<div id="screen-home" class="screen active">
+  <header class="home-header">
+    <div class="logo">
+      <span class="logo-icon">⚡</span>
+      <span>Code<strong>Academy</strong></span>
+    </div>
+    <div class="streak-badge" id="streak-badge">🔥 <span id="streak-count">0</span> day streak</div>
+  </header>
+
+  <div class="home-hero">
+    <h1 class="hero-title">Master <span class="gradient-text">HTML &amp; CSS</span></h1>
+    <p class="hero-sub">7 levels · 100+ questions · 5 question types · Code editor included</p>
+  </div>
+
+  <div class="levels-grid" id="levels-grid">
+    <!-- Level cards injected by JS -->
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCREEN: VIDEO CHOICE ════════════════ -->
+<div id="screen-choice" class="screen">
+  <button class="back-btn" id="choice-back">← Back</button>
+
+  <div class="choice-card">
+    <div class="choice-level-icon" id="choice-icon">📄</div>
+    <h2 id="choice-title">Level Title</h2>
+    <p id="choice-desc">Level description goes here.</p>
+
+    <div class="choice-buttons">
+      <button class="choice-btn video-btn" id="btn-watch-video">
+        <span class="choice-btn-icon">🎬</span>
+        <span class="choice-btn-label">Watch Lesson Video</span>
+        <span class="choice-btn-sub">Recommended for beginners</span>
+      </button>
+      <button class="choice-btn skip-btn" id="btn-skip-video">
+        <span class="choice-btn-icon">⚡</span>
+        <span class="choice-btn-label">Jump to Quiz</span>
+        <span class="choice-btn-sub">I already know this topic</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCREEN: VIDEO ═══════════════════════ -->
+<div id="screen-video" class="screen">
+  <button class="back-btn" id="video-back">← Back</button>
+
+  <div class="video-container">
+    <h2 id="video-title">Lesson Video</h2>
+    <div class="video-wrapper">
+      <iframe id="video-frame" src="" allowfullscreen></iframe>
+    </div>
+    <button class="btn-primary pulse-btn" id="btn-start-quiz">
+      Start Quiz ⚡
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCREEN: QUIZ ════════════════════════ -->
+<div id="screen-quiz" class="screen">
+
+  <div class="quiz-topbar">
+    <button class="back-btn small" id="quiz-back">✕</button>
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-bar">
+        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+      </div>
+      <span class="quiz-progress-label" id="quiz-progress-label">1 / 12</span>
+    </div>
+    <div class="quiz-score-badge" id="quiz-score-badge">⭐ 0</div>
+  </div>
+
+  <div class="quiz-body" id="quiz-body">
+
+    <!-- Question type badge -->
+    <div class="question-type-badge" id="q-type-badge">MCQ</div>
+
+    <!-- Code snippet (for identify / fill questions) -->
+    <div class="code-snippet-box" id="code-snippet-box" style="display:none">
+      <pre><code id="code-snippet-text"></code></pre>
+    </div>
+
+    <!-- Question text -->
+    <h2 class="question-text" id="question-text"></h2>
+
+    <!-- ── MCQ / Identify choices ── -->
+    <div class="choices-grid" id="choices-grid" style="display:none"></div>
+
+    <!-- ── WH / Fill text input ── -->
+    <div class="text-answer-wrap" id="text-answer-wrap" style="display:none">
+      <input type="text" class="text-answer-input" id="text-answer-input"
+             placeholder="Type your answer…" autocomplete="off" />
+    </div>
+
+    <!-- ── Code editor ── -->
+    <div class="code-editor-wrap" id="code-editor-wrap" style="display:none">
+      <div class="editor-header">
+        <span>💻 Code Editor</span>
+        <button class="btn-run" id="btn-run-code">▶ Run Preview</button>
+      </div>
+      <textarea id="code-editor-textarea"></textarea>
+      <div class="editor-preview" id="editor-preview" style="display:none">
+        <div class="preview-label">Preview</div>
+        <iframe id="preview-iframe" sandbox="allow-scripts"></iframe>
+      </div>
+    </div>
+
+    <!-- Feedback zone -->
+    <div class="feedback-zone" id="feedback-zone" style="display:none">
+      <div class="feedback-icon" id="feedback-icon"></div>
+      <div class="feedback-text" id="feedback-text"></div>
+      <div class="feedback-explanation" id="feedback-explanation"></div>
+    </div>
+
+    <!-- Try-it playground (shown after each answer reveal) -->
+    <div class="tryit-zone" id="tryit-zone" style="display:none">
+      <button class="tryit-toggle" id="tryit-toggle">🛠️ Try it yourself</button>
+      <div class="tryit-editor" id="tryit-editor" style="display:none">
+        <textarea id="tryit-textarea"></textarea>
+        <button class="btn-run small" id="btn-tryit-run">▶ Run</button>
+        <iframe id="tryit-iframe" sandbox="allow-scripts" class="tryit-iframe"></iframe>
+      </div>
+    </div>
+
+    <!-- Submit / Next buttons -->
+    <div class="quiz-actions">
+      <button class="btn-primary" id="btn-submit" style="display:none">Check Answer ✓</button>
+      <button class="btn-next"    id="btn-next"   style="display:none">Next →</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════ SCREEN: RESULTS ═════════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-card" id="results-card">
+    <div class="results-emoji" id="results-emoji">🎉</div>
+    <h2 class="results-title" id="results-title">Level Complete!</h2>
+    <div class="results-score-ring">
+      <svg viewBox="0 0 120 120">
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52"
+                stroke-dasharray="0 327"/>
+      </svg>
+      <div class="ring-label">
+        <span class="ring-score" id="ring-score">0</span>
+        <span class="ring-total" id="ring-total">/12</span>
+      </div>
+    </div>
+    <p class="results-percent" id="results-percent"></p>
+    <div class="results-actions">
+      <button class="btn-secondary" id="btn-retry">↻ Retry Level</button>
+      <button class="btn-primary"   id="btn-next-level">Next Level →</button>
+    </div>
+  </div>
+  <div class="confetti-container" id="confetti-container"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
