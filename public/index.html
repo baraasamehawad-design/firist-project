@@ -1,183 +1,535 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Code Academy — HTML &amp; CSS</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<title>Syntactic Play</title>
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+/* ══ THEME SYSTEM ══════════════════════════════════════════════
+   Desktop  ≥1024px  → Blue   (default, space navy)
+   Tablet  481–1023px → Chocolate (warm dark cocoa)
+   Mobile   ≤480px   → Brown  (deep earthy)
+═══════════════════════════════════════════════════════════════ */
 
-  <!-- CodeMirror -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/dracula.min.css" />
+/* Blue — desktop default */
+:root {
+  --bg:#07071a; --surface:#0d0d26; --border:#1a1a40;
+  --blue:#4a90e2; --cyan:#00c8ff; --green:#22c55e;
+  --red:#ef4444; --gold:#facc15; --orange:#f97316;
+  --text:#c8d8ff; --muted:#4a5a8a; --r:16px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bot: env(safe-area-inset-bottom, 0px);
+  /* derived theme tokens */
+  --glow1:#4a90e214; --glow2:#00c8ff0a;
+  --header-bg:#07071aee;
+  --fill-a:#1a4fa0; --fill-b:#4a90e2;
+  --blue-glow60:#4a90e260; --blue-glow50:#4a90e250;
+  --blue-glow30:#4a90e230; --blue-glow14:#4a90e214;
+  --track-bg:#1a1a40;
+  --input-bg:#0a0a22; --snip-bg:#06061a;
+  --expl-bg:#0a1530; --expl-border:#1a3a6a; --expl-text:#8ab8ff;
+  --retry-bg:#0e1a3a; --retry-border:#2a4a80;
+  --pill-bg:#12122e;
+}
 
-  <link rel="stylesheet" href="/css/styles.css" />
+/* Chocolate — tablet */
+@media (min-width:481px) and (max-width:1023px) {
+  :root {
+    --bg:#110806; --surface:#1e1109; --border:#3e1e0c;
+    --blue:#d4845a; --cyan:#f0a06a; --green:#5cb87a;
+    --red:#e05050; --gold:#facc15; --orange:#f97316;
+    --text:#f5e0cc; --muted:#8a6042;
+    --glow1:#d4845a14; --glow2:#f0a06a0a;
+    --header-bg:#110806ee;
+    --fill-a:#7a3e20; --fill-b:#d4845a;
+    --blue-glow60:#d4845a60; --blue-glow50:#d4845a50;
+    --blue-glow30:#d4845a30; --blue-glow14:#d4845a14;
+    --track-bg:#3e1e0c;
+    --input-bg:#160c06; --snip-bg:#0e0804;
+    --expl-bg:#1e1208; --expl-border:#4a2510; --expl-text:#f0c0a0;
+    --retry-bg:#2a1408; --retry-border:#6b3818;
+    --pill-bg:#220e06;
+  }
+}
+
+/* Brown — mobile */
+@media (max-width:480px) {
+  :root {
+    --bg:#0e0904; --surface:#1a1007; --border:#3a1e08;
+    --blue:#c4854e; --cyan:#e8a060; --green:#5cb87a;
+    --red:#e05050; --gold:#facc15; --orange:#f97316;
+    --text:#f0d8b8; --muted:#7a5830;
+    --glow1:#c4854e14; --glow2:#e8a0600a;
+    --header-bg:#0e0904ee;
+    --fill-a:#6b3818; --fill-b:#c4854e;
+    --blue-glow60:#c4854e60; --blue-glow50:#c4854e50;
+    --blue-glow30:#c4854e30; --blue-glow14:#c4854e14;
+    --track-bg:#3a1e08;
+    --input-bg:#140c05; --snip-bg:#0b0803;
+    --expl-bg:#1a1006; --expl-border:#422010; --expl-text:#e8c098;
+    --retry-bg:#261206; --retry-border:#5c3010;
+    --pill-bg:#1e0e04;
+  }
+}
+
+html, body { height:100%; overflow:hidden; background:var(--bg); color:var(--text);
+  font-family:'Segoe UI',system-ui,sans-serif; }
+body::before { content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background: radial-gradient(ellipse 80% 40% at 20% 0%, var(--glow1) 0%, transparent 60%),
+              radial-gradient(ellipse 60% 50% at 80% 100%, var(--glow2) 0%, transparent 60%); }
+
+/* ── Header ── */
+header { position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:calc(var(--safe-top) + .6rem) 1.25rem .6rem;
+  background:var(--header-bg); backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; }
+.logo { font-size:1.25rem; font-weight:800; letter-spacing:2px;
+  background:linear-gradient(120deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  filter:drop-shadow(0 0 10px var(--blue-glow60)); animation:glow 4s ease-in-out infinite; }
+@keyframes glow { 0%,100%{filter:drop-shadow(0 0 10px var(--blue-glow60))} 50%{filter:drop-shadow(0 0 20px var(--blue-glow60))} }
+.hud { display:flex; gap:.5rem; align-items:center; }
+.pill { background:var(--pill-bg); border:1px solid var(--border); border-radius:20px;
+  padding:.3rem .75rem; font-size:.8rem; font-weight:700; line-height:1; }
+.pill.xp  { color:var(--gold); }
+.pill.str { color:var(--orange); }
+
+/* ── Scroll body ── */
+.scroll-body { position:fixed; inset:0; overflow-y:auto; overflow-x:hidden;
+  padding-top:calc(var(--safe-top) + 56px); padding-bottom:calc(var(--safe-bot) + 1rem); z-index:1; }
+.scroll-body::-webkit-scrollbar { display:none; }
+
+/* ── VIEWS ── */
+.view { display:none; }
+.view.active { display:block; }
+
+/* ── PATH VIEW ── */
+#view-path { padding:1.5rem 0 3rem; }
+.path-wrap { display:flex; flex-direction:column; align-items:center; gap:0; }
+
+.path-section-label { font-size:.65rem; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; color:var(--muted); margin:1.5rem 0 .75rem; text-align:center; }
+
+.path-node { display:flex; flex-direction:column; align-items:center; width:100%; }
+
+.connector { width:3px; height:44px;
+  background:linear-gradient(to bottom,var(--blue),var(--track-bg)); opacity:.5; }
+
+.node-card { position:relative; width:calc(100% - 2.5rem); max-width:380px;
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--r);
+  padding:1rem 1.25rem; display:flex; align-items:center; gap:1rem;
+  cursor:pointer; transition:transform .2s, box-shadow .3s, border-color .3s;
+  -webkit-user-select:none; user-select:none; }
+.node-card:active { transform:scale(.97); }
+.node-card.done  { border-color:var(--green); opacity:.85; }
+.node-card.active-level { border-color:var(--blue-glow60);
+  box-shadow:0 0 20px var(--blue-glow30), 0 0 50px var(--blue-glow14); }
+.node-card.locked { opacity:.45; cursor:default; }
+
+.node-circle { width:62px; height:62px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.75rem; border:2.5px solid var(--border);
+  background:var(--bg); position:relative; transition:border-color .3s, box-shadow .3s; }
+.node-circle.done  { border-color:var(--green); box-shadow:0 0 14px var(--blue-glow30); }
+.node-circle.go    { border-color:var(--blue);  box-shadow:0 0 18px var(--blue-glow50);
+  animation:nodePulse 2.5s ease-in-out infinite; }
+@keyframes nodePulse { 0%,100%{box-shadow:0 0 18px var(--blue-glow50)} 50%{box-shadow:0 0 32px var(--blue-glow60)} }
+.node-circle.locked { border-color:var(--border); filter:grayscale(1); }
+.done-tick { position:absolute; bottom:-4px; right:-4px; width:20px; height:20px;
+  background:var(--green); border-radius:50%; font-size:.7rem;
+  display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; }
+
+.node-info { flex:1; min-width:0; }
+.node-topic { font-size:.65rem; font-weight:700; letter-spacing:1.5px;
+  text-transform:uppercase; color:var(--blue); margin-bottom:.2rem; }
+.node-topic.css { color:var(--cyan); }
+.node-title { font-size:1rem; font-weight:700; color:var(--text); margin-bottom:.3rem;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.node-bar { height:5px; background:var(--track-bg); border-radius:3px; overflow:hidden; }
+.node-fill { height:100%; border-radius:3px;
+  background:linear-gradient(90deg,var(--fill-a),var(--fill-b));
+  box-shadow:0 0 6px var(--blue-glow50); transition:width .4s; }
+.node-score { font-size:.72rem; color:var(--muted); margin-top:.25rem; }
+.go-arrow { font-size:1.2rem; color:var(--blue); flex-shrink:0; opacity:.7; }
+
+/* ── QUIZ OVERLAY ── */
+#view-quiz { position:fixed; inset:0; z-index:200; background:var(--bg);
+  display:none; flex-direction:column; transform:translateY(100%);
+  transition:transform .35s cubic-bezier(.34,1.56,.64,1); }
+#view-quiz.active { display:flex; transform:translateY(0); }
+
+.quiz-top { padding:calc(var(--safe-top) + .75rem) 1.25rem .75rem;
+  background:var(--header-bg); backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border); flex-shrink:0; }
+.quiz-nav { display:flex; align-items:center; gap:.75rem; margin-bottom:.6rem; }
+.back-btn { background:none; border:1px solid var(--border); border-radius:10px;
+  color:var(--muted); padding:.45rem .9rem; font-size:.85rem; cursor:pointer;
+  transition:border-color .2s,color .2s; min-height:40px; }
+.back-btn:active { border-color:var(--blue); color:var(--blue); }
+.quiz-level-name { font-size:.95rem; font-weight:700; flex:1;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.quiz-count { font-size:.8rem; color:var(--muted); flex-shrink:0; }
+.qbar { height:5px; background:var(--track-bg); border-radius:3px; overflow:hidden; }
+.qfill { height:100%; border-radius:3px;
+  background:linear-gradient(90deg,var(--fill-a),var(--fill-b));
+  box-shadow:0 0 8px var(--blue-glow60); transition:width .4s ease; }
+
+.quiz-scroll { flex:1; overflow-y:auto; padding:1.25rem 1.25rem 2rem; }
+.quiz-scroll::-webkit-scrollbar { display:none; }
+
+.qcard { background:var(--surface); border:1px solid var(--border);
+  border-radius:var(--r); padding:1.5rem; margin-bottom:1rem;
+  box-shadow:0 0 24px var(--blue-glow14); }
+.qtype { font-size:.65rem; font-weight:700; letter-spacing:2px;
+  text-transform:uppercase; color:var(--cyan); margin-bottom:.75rem; display:block; }
+.qtext { font-size:1.05rem; line-height:1.6; margin-bottom:1rem; }
+.qsnip { background:var(--snip-bg); border:1px solid var(--border); border-radius:10px;
+  padding:.9rem 1rem; font-family:'Consolas','Courier New',monospace; font-size:.82rem;
+  color:var(--cyan); white-space:pre-wrap; margin-bottom:1rem; overflow-x:auto; }
+.choices { display:flex; flex-direction:column; gap:.65rem; }
+.cbtn { background:var(--input-bg); border:1px solid var(--border); border-radius:12px;
+  padding:1rem 1.25rem; text-align:left; color:var(--text); font-size:.95rem;
+  cursor:pointer; transition:border-color .15s, background .15s; width:100%;
+  min-height:52px; line-height:1.4; }
+.cbtn:active:not(:disabled) { transform:scale(.98); }
+.cbtn.correct { border-color:var(--green); background:var(--expl-bg); color:var(--green); }
+.cbtn.wrong   { border-color:var(--red);   background:var(--retry-bg); color:var(--red); }
+.cbtn:disabled { cursor:default; }
+.text-row { display:flex; gap:.6rem; align-items:flex-start; }
+.text-row input, .text-row textarea {
+  flex:1; background:var(--input-bg); border:1px solid var(--border); border-radius:10px;
+  color:var(--text); font-size:.95rem; padding:.8rem 1rem; outline:none;
+  transition:border-color .3s, box-shadow .3s; font-family:inherit; min-height:52px; }
+.text-row textarea { resize:vertical; min-height:80px;
+  font-family:'Consolas','Courier New',monospace; font-size:.88rem; }
+.text-row input:focus, .text-row textarea:focus {
+  border-color:var(--blue); box-shadow:0 0 12px var(--blue-glow30); }
+.go-btn { padding:.8rem 1.25rem; border:none; border-radius:10px;
+  background:linear-gradient(135deg,var(--fill-a),var(--fill-b)); color:#fff;
+  font-weight:700; cursor:pointer; font-size:.95rem; min-height:52px;
+  min-width:64px; transition:box-shadow .2s; }
+.go-btn:active { box-shadow:0 0 18px var(--blue-glow60); }
+.expl { margin-top:1rem; padding:1rem; background:var(--expl-bg);
+  border:1px solid var(--expl-border); border-radius:12px;
+  font-size:.88rem; line-height:1.6; color:var(--expl-text); animation:fadeUp .3s ease; }
+.expl strong { color:var(--cyan); }
+.next-btn { display:block; width:100%; margin-top:1rem; padding:1rem;
+  border:none; border-radius:12px;
+  background:linear-gradient(135deg,var(--fill-a),var(--fill-b));
+  color:#fff; font-size:1rem; font-weight:700; cursor:pointer;
+  min-height:54px; transition:box-shadow .2s; }
+.next-btn:active { box-shadow:0 0 20px var(--blue-glow60); }
+
+/* ── RESULTS OVERLAY ── */
+#view-results { position:fixed; inset:0; z-index:300; background:var(--bg);
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding:2rem 1.5rem; gap:1.25rem;
+  transform:scale(.9); opacity:0; transition:transform .4s,opacity .4s; }
+#view-results.active { display:flex; transform:scale(1); opacity:1; }
+.res-icon { font-size:4rem; animation:popIn .5s cubic-bezier(.34,1.56,.64,1); }
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.res-title { font-size:2rem; font-weight:800; text-align:center;
+  background:linear-gradient(120deg,var(--cyan),var(--blue));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.res-sub { color:var(--muted); font-size:.9rem; text-align:center; }
+.score-ring { width:140px; height:140px; border-radius:50%;
+  border:4px solid var(--border); background:var(--surface);
+  box-shadow:0 0 30px var(--blue-glow50); display:flex; flex-direction:column;
+  align-items:center; justify-content:center; }
+.score-pct { font-size:2.2rem; font-weight:800; color:var(--cyan);
+  text-shadow:0 0 16px var(--blue-glow60); }
+.score-lbl { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+.stats-row { display:flex; gap:.75rem; width:100%; max-width:340px; }
+.stat { flex:1; background:var(--surface); border:1px solid var(--border);
+  border-radius:12px; padding:.85rem; text-align:center; }
+.stat-n { font-size:1.4rem; font-weight:800; }
+.stat-l { font-size:.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:1px; }
+.res-btns { display:flex; flex-direction:column; gap:.75rem; width:100%; max-width:340px; }
+.res-btns button { width:100%; padding:1rem; border-radius:12px;
+  font-size:1rem; font-weight:700; cursor:pointer; min-height:54px; border:none; }
+.btn-retry { background:var(--retry-bg); color:var(--blue); border:1px solid var(--retry-border) !important; }
+.btn-home  { background:linear-gradient(135deg,var(--fill-a),var(--fill-b)); color:#fff; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+</style>
 </head>
 <body>
 
-<!-- ═══════════════════════ SCREEN: HOME ═══════════════════════ -->
-<div id="screen-home" class="screen active">
-  <header class="home-header">
-    <div class="logo">
-      <span class="logo-icon">⚡</span>
-      <span>Code<strong>Academy</strong></span>
-    </div>
-    <div class="streak-badge" id="streak-badge">🔥 <span id="streak-count">0</span> day streak</div>
-  </header>
-
-  <div class="home-hero">
-    <h1 class="hero-title">Master <span class="gradient-text">HTML &amp; CSS</span></h1>
-    <p class="hero-sub">7 levels · 100+ questions · 5 question types · Code editor included</p>
+<header>
+  <div class="logo">✦ Syntactic Play</div>
+  <div class="hud">
+    <div class="pill xp" id="hud-xp">⚡ 0 XP</div>
+    <div class="pill str" id="hud-str">🔥 0</div>
   </div>
+</header>
 
-  <div class="levels-grid" id="levels-grid">
-    <!-- Level cards injected by JS -->
-  </div>
-</div>
-
-<!-- ═══════════════════════ SCREEN: VIDEO CHOICE ════════════════ -->
-<div id="screen-choice" class="screen">
-  <button class="back-btn" id="choice-back">← Back</button>
-
-  <div class="choice-card">
-    <div class="choice-level-icon" id="choice-icon">📄</div>
-    <h2 id="choice-title">Level Title</h2>
-    <p id="choice-desc">Level description goes here.</p>
-
-    <div class="choice-buttons">
-      <button class="choice-btn video-btn" id="btn-watch-video">
-        <span class="choice-btn-icon">🎬</span>
-        <span class="choice-btn-label">Watch Lesson Video</span>
-        <span class="choice-btn-sub">Recommended for beginners</span>
-      </button>
-      <button class="choice-btn skip-btn" id="btn-skip-video">
-        <span class="choice-btn-icon">⚡</span>
-        <span class="choice-btn-label">Jump to Quiz</span>
-        <span class="choice-btn-sub">I already know this topic</span>
-      </button>
+<!-- ── PATH ── -->
+<div class="scroll-body">
+  <div class="view active" id="view-path">
+    <div id="path-content" class="path-wrap">
+      <div style="color:var(--muted);padding:3rem;text-align:center">Loading levels…</div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════════ SCREEN: VIDEO ═══════════════════════ -->
-<div id="screen-video" class="screen">
-  <button class="back-btn" id="video-back">← Back</button>
-
-  <div class="video-container">
-    <h2 id="video-title">Lesson Video</h2>
-    <div class="video-wrapper">
-      <iframe id="video-frame" src="" allowfullscreen></iframe>
+<!-- ── QUIZ (fixed overlay) ── -->
+<div class="view" id="view-quiz">
+  <div class="quiz-top">
+    <div class="quiz-nav">
+      <button class="back-btn" onclick="closeQuiz()">← Back</button>
+      <div class="quiz-level-name" id="ql-name"></div>
+      <div class="quiz-count" id="ql-count"></div>
     </div>
-    <button class="btn-primary pulse-btn" id="btn-start-quiz">
-      Start Quiz ⚡
-    </button>
+    <div class="qbar"><div class="qfill" id="qfill" style="width:0%"></div></div>
+  </div>
+  <div class="quiz-scroll"><div id="qarea"></div></div>
+</div>
+
+<!-- ── RESULTS (fixed overlay) ── -->
+<div class="view" id="view-results">
+  <div class="res-icon" id="res-icon">🎉</div>
+  <div class="res-title" id="res-title">Complete!</div>
+  <div class="res-sub" id="res-sub"></div>
+  <div class="score-ring">
+    <div class="score-pct" id="res-pct">0%</div>
+    <div class="score-lbl">Score</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-n" id="st-c">0</div><div class="stat-l">Correct</div></div>
+    <div class="stat"><div class="stat-n" id="st-t">0</div><div class="stat-l">Total</div></div>
+    <div class="stat"><div class="stat-n" id="st-x">+0</div><div class="stat-l">XP</div></div>
+  </div>
+  <div class="res-btns">
+    <button class="btn-retry" onclick="retryLevel()">↺ Try Again</button>
+    <button class="btn-home" onclick="backToPath()">🏠 Level Path</button>
   </div>
 </div>
 
-<!-- ═══════════════════════ SCREEN: QUIZ ════════════════════════ -->
-<div id="screen-quiz" class="screen">
+<script src="js/db.js"></script>
+<script>
+/* ── State ─────────────────────────────────────────────────── */
+const SID   = sessionStorage.getItem('sp_sid') || crypto.randomUUID();
+sessionStorage.setItem('sp_sid', SID);
+let xp      = parseInt(sessionStorage.getItem('sp_xp') || '0');
+let streak  = parseInt(sessionStorage.getItem('sp_str') || '0');
+let Q       = { level:null, questions:[], idx:0, correct:0, pid:null, answered:false };
 
-  <div class="quiz-topbar">
-    <button class="back-btn small" id="quiz-back">✕</button>
-    <div class="quiz-progress-wrap">
-      <div class="quiz-progress-bar">
-        <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
-      </div>
-      <span class="quiz-progress-label" id="quiz-progress-label">1 / 12</span>
+/* ── Boot ───────────────────────────────────────────────────── */
+(async () => {
+  await DB.init();
+  updateHUD();
+  await renderPath();
+})();
+
+function updateHUD() {
+  document.getElementById('hud-xp').textContent  = `⚡ ${xp} XP`;
+  document.getElementById('hud-str').textContent = `🔥 ${streak}`;
+}
+
+/* ── PATH ───────────────────────────────────────────────────── */
+async function renderPath() {
+  const wrap = document.getElementById('path-content');
+  try {
+    const levels = await DB.getLevels(SID);
+    let lastTopic = '';
+    let firstUnlocked = true;
+    wrap.innerHTML = levels.map((l, i) => {
+      const done  = !!l.completed;
+      const pct   = l.total ? Math.round((l.score / l.total) * 100) : 0;
+      const isGo  = !done && firstUnlocked;
+      const locked = false; // all levels unlocked for now
+      if (isGo) firstUnlocked = false;
+
+      const circleClass = done ? 'done' : isGo ? 'go' : 'locked';
+      const cardClass   = done ? 'done' : isGo ? 'active-level' : '';
+      const topicClass  = l.topic === 'CSS' ? 'node-topic css' : 'node-topic';
+      const tick        = done ? '<div class="done-tick">✓</div>' : '';
+      const arrow       = !locked ? '<div class="go-arrow">›</div>' : '';
+      const connector   = i > 0 ? '<div class="connector"></div>' : '';
+      const label       = l.topic !== lastTopic ? `<div class="path-section-label">${l.topic}</div>` : '';
+      lastTopic = l.topic;
+
+      return `
+        ${label}
+        <div class="path-node">
+          ${connector}
+          <div class="node-card ${cardClass}" onclick="${locked?'':`startLevel(${l.id})`}">
+            <div class="node-circle ${circleClass}">
+              ${l.icon || '📘'}${tick}
+            </div>
+            <div class="node-info">
+              <div class="${topicClass}">${l.topic} · Level ${l.order_num}</div>
+              <div class="node-title">${l.title}</div>
+              <div class="node-bar"><div class="node-fill" style="width:${pct}%"></div></div>
+              <div class="node-score">${done ? `✓ ${pct}% complete` : l.total ? `${l.score}/${l.total} correct` : 'Not started'}</div>
+            </div>
+            ${arrow}
+          </div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    wrap.innerHTML = `<div style="color:#ef4444;padding:2rem;text-align:center">
+      Could not load levels.<br><small>${e.message}</small></div>`;
+  }
+}
+
+/* ── QUIZ ───────────────────────────────────────────────────── */
+async function startLevel(levelId) {
+  try {
+    const [levels, questions, prog] = await Promise.all([
+      DB.getLevels(SID),
+      DB.getQuestions(levelId, 12),
+      DB.startProgress(SID, levelId)
+    ]);
+    const level = levels.find(l => l.id === levelId) || { title: 'Level', icon: '📘' };
+    Q = { level, questions, idx: 0, correct: 0, pid: prog.id, answered: false };
+    document.getElementById('ql-name').textContent = `${level.icon} ${level.title}`;
+    showView('quiz');
+    renderQuestion();
+  } catch (e) {
+    alert('Could not load level: ' + e.message);
+  }
+}
+
+function renderQuestion() {
+  const q   = Q.questions[Q.idx];
+  const pct = Math.round((Q.idx / Q.questions.length) * 100);
+  document.getElementById('ql-count').textContent  = `${Q.idx + 1}/${Q.questions.length}`;
+  document.getElementById('qfill').style.width     = pct + '%';
+  Q.answered = false;
+
+  const labels = { mcq:'Multiple Choice', wh:'Short Answer', fill:'Fill in the Blank', identify:'Identify', code:'Write Code' };
+
+  let ansHtml = '';
+  if (q.type === 'mcq' || q.type === 'identify') {
+    ansHtml = `<div class="choices">${(q.choices||[]).map((c,i) =>
+      `<button class="cbtn" id="cb${i}" onclick="submitMCQ(${i},this.dataset.answer)" data-answer="${esc(c.text)}">${c.text}</button>`
+    ).join('')}</div>`;
+  } else if (q.type === 'code') {
+    ansHtml = `<div class="text-row"><textarea id="ta" placeholder="Write your code here…"></textarea><button class="go-btn" onclick="submitText()">✓</button></div>`;
+  } else {
+    ansHtml = `<div class="text-row"><input id="ta" placeholder="Your answer…" onkeydown="if(event.key==='Enter')submitText()"/><button class="go-btn" onclick="submitText()">✓</button></div>`;
+  }
+
+  document.getElementById('qarea').innerHTML = `
+    <div class="qcard">
+      <span class="qtype">${labels[q.type] || q.type}</span>
+      <div class="qtext">${q.question}</div>
+      ${q.code_snippet ? `<pre class="qsnip">${escHTML(q.code_snippet)}</pre>` : ''}
+      ${ansHtml}
+      <div id="explarea"></div>
+    </div>`;
+
+  if (q.type !== 'mcq' && q.type !== 'identify')
+    setTimeout(() => document.getElementById('ta')?.focus(), 80);
+}
+
+async function submitMCQ(idx, answer) {
+  if (Q.answered) return;
+  Q.answered = true;
+  const q    = Q.questions[Q.idx];
+  const data = await DB.checkAnswer(q.id, answer);
+  if (data.correct) Q.correct++;
+  (Q.questions[Q.idx].choices||[]).forEach((c,i) => {
+    const btn = document.getElementById('cb' + i);
+    if (!btn) return;
+    btn.disabled = true;
+    if (c.text === data.correct_answer) btn.classList.add('correct');
+    else if (i === idx && !data.correct) btn.classList.add('wrong');
+  });
+  showExplanation(data);
+}
+
+async function submitText() {
+  if (Q.answered) return;
+  const ta = document.getElementById('ta');
+  const answer = ta?.value?.trim();
+  if (!answer) return;
+  Q.answered = true;
+  if (ta) ta.disabled = true;
+  const q    = Q.questions[Q.idx];
+  const data = await DB.checkAnswer(q.id, answer);
+  if (data.correct) Q.correct++;
+  showExplanation(data);
+}
+
+function showExplanation(data) {
+  const ok    = data.correct;
+  const color = ok ? 'var(--green)' : 'var(--red)';
+  const wrong = !ok && data.correct_answer
+    ? `<div style="margin:.4rem 0;font-size:.82rem;color:#7a9acc">Answer: <code style="color:var(--cyan)">${escHTML(String(data.correct_answer))}</code></div>`
+    : '';
+  document.getElementById('explarea').innerHTML = `
+    <div class="expl">
+      <strong style="color:${color}">${ok ? '✅ Correct!' : '❌ Not quite.'}</strong>
+      ${wrong}
+      ${data.explanation ? `<div style="margin-top:.35rem">${data.explanation}</div>` : ''}
     </div>
-    <div class="quiz-score-badge" id="quiz-score-badge">⭐ 0</div>
-  </div>
+    <button class="next-btn" onclick="nextQ()">${Q.idx + 1 < Q.questions.length ? 'Next →' : 'See Results →'}</button>`;
+}
 
-  <div class="quiz-body" id="quiz-body">
+async function nextQ() {
+  Q.idx++;
+  if (Q.idx < Q.questions.length) {
+    renderQuestion();
+  } else {
+    await finishLevel();
+  }
+}
 
-    <!-- Question type badge -->
-    <div class="question-type-badge" id="q-type-badge">MCQ</div>
+async function finishLevel() {
+  const total = Q.questions.length;
+  const pct   = Math.round((Q.correct / total) * 100);
+  const earned = Math.round(pct * 0.5);
+  xp     += earned;
+  streak += pct >= 60 ? 1 : 0;
+  sessionStorage.setItem('sp_xp',  xp);
+  sessionStorage.setItem('sp_str', streak);
+  updateHUD();
 
-    <!-- Code snippet (for identify / fill questions) -->
-    <div class="code-snippet-box" id="code-snippet-box" style="display:none">
-      <pre><code id="code-snippet-text"></code></pre>
-    </div>
+  if (Q.pid != null) {
+    await DB.updateProgress(Q.pid, { score: Q.correct, total, completed: pct >= 60 ? 1 : 0 });
+  }
 
-    <!-- Question text -->
-    <h2 class="question-text" id="question-text"></h2>
+  document.getElementById('res-icon').textContent  = pct >= 80 ? '🏆' : pct >= 60 ? '🎉' : '📚';
+  document.getElementById('res-title').textContent = pct >= 80 ? 'Excellent!' : pct >= 60 ? 'Level Done!' : 'Keep Practicing';
+  document.getElementById('res-sub').textContent   = Q.level?.title || '';
+  document.getElementById('res-pct').textContent   = pct + '%';
+  document.getElementById('st-c').textContent  = Q.correct;
+  document.getElementById('st-t').textContent  = total;
+  document.getElementById('st-x').textContent  = '+' + earned;
+  showView('results');
+}
 
-    <!-- ── MCQ / Identify choices ── -->
-    <div class="choices-grid" id="choices-grid" style="display:none"></div>
+function closeQuiz() { showView('path'); }
+function retryLevel() { if (Q.level) startLevel(Q.level.id); }
+async function backToPath() { showView('path'); await renderPath(); }
 
-    <!-- ── WH / Fill text input ── -->
-    <div class="text-answer-wrap" id="text-answer-wrap" style="display:none">
-      <input type="text" class="text-answer-input" id="text-answer-input"
-             placeholder="Type your answer…" autocomplete="off" />
-    </div>
+/* ── Overlay management ─────────────────────────────────────── */
+function showView(name) {
+  document.getElementById('view-path').classList.toggle('active', name === 'path');
+  const quiz = document.getElementById('view-quiz');
+  const res  = document.getElementById('view-results');
+  if (name === 'quiz') {
+    quiz.style.display = 'flex';
+    requestAnimationFrame(() => quiz.classList.add('active'));
+    res.classList.remove('active'); res.style.display = 'none';
+  } else if (name === 'results') {
+    res.style.display = 'flex';
+    requestAnimationFrame(() => res.classList.add('active'));
+  } else {
+    quiz.classList.remove('active');
+    setTimeout(() => { quiz.style.display = 'none'; }, 380);
+    res.classList.remove('active'); res.style.display = 'none';
+  }
+}
 
-    <!-- ── Code editor ── -->
-    <div class="code-editor-wrap" id="code-editor-wrap" style="display:none">
-      <div class="editor-header">
-        <span>💻 Code Editor</span>
-        <button class="btn-run" id="btn-run-code">▶ Run Preview</button>
-      </div>
-      <textarea id="code-editor-textarea"></textarea>
-      <div class="editor-preview" id="editor-preview" style="display:none">
-        <div class="preview-label">Preview</div>
-        <iframe id="preview-iframe" sandbox="allow-scripts"></iframe>
-      </div>
-    </div>
-
-    <!-- Feedback zone -->
-    <div class="feedback-zone" id="feedback-zone" style="display:none">
-      <div class="feedback-icon" id="feedback-icon"></div>
-      <div class="feedback-text" id="feedback-text"></div>
-      <div class="feedback-explanation" id="feedback-explanation"></div>
-    </div>
-
-    <!-- Try-it playground (shown after each answer reveal) -->
-    <div class="tryit-zone" id="tryit-zone" style="display:none">
-      <button class="tryit-toggle" id="tryit-toggle">🛠️ Try it yourself</button>
-      <div class="tryit-editor" id="tryit-editor" style="display:none">
-        <textarea id="tryit-textarea"></textarea>
-        <button class="btn-run small" id="btn-tryit-run">▶ Run</button>
-        <iframe id="tryit-iframe" sandbox="allow-scripts" class="tryit-iframe"></iframe>
-      </div>
-    </div>
-
-    <!-- Submit / Next buttons -->
-    <div class="quiz-actions">
-      <button class="btn-primary" id="btn-submit" style="display:none">Check Answer ✓</button>
-      <button class="btn-next"    id="btn-next"   style="display:none">Next →</button>
-    </div>
-
-  </div>
-</div>
-
-<!-- ═══════════════════════ SCREEN: RESULTS ═════════════════════ -->
-<div id="screen-results" class="screen">
-  <div class="results-card" id="results-card">
-    <div class="results-emoji" id="results-emoji">🎉</div>
-    <h2 class="results-title" id="results-title">Level Complete!</h2>
-    <div class="results-score-ring">
-      <svg viewBox="0 0 120 120">
-        <circle class="ring-bg" cx="60" cy="60" r="52"/>
-        <circle class="ring-fill" id="ring-fill" cx="60" cy="60" r="52"
-                stroke-dasharray="0 327"/>
-      </svg>
-      <div class="ring-label">
-        <span class="ring-score" id="ring-score">0</span>
-        <span class="ring-total" id="ring-total">/12</span>
-      </div>
-    </div>
-    <p class="results-percent" id="results-percent"></p>
-    <div class="results-actions">
-      <button class="btn-secondary" id="btn-retry">↻ Retry Level</button>
-      <button class="btn-primary"   id="btn-next-level">Next Level →</button>
-    </div>
-  </div>
-  <div class="confetti-container" id="confetti-container"></div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════ -->
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/css/css.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
-<script src="/js/app.js"></script>
+function esc(s)     { return String(s).replace(/"/g,'&quot;'); }
+function escHTML(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+</script>
 </body>
 </html>

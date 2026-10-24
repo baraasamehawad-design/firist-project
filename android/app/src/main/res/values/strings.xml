@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Syntactic Play</string>
+    <string name="title_activity_main">Syntactic Play</string>
+    <string name="package_name">com.syntacticplay.app</string>
+    <string name="custom_url_scheme">com.syntacticplay.app</string>
+</resources>

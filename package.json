@@ -1,15 +1,26 @@
 {
-  "name": "html-css-learning-platform",
+  "name": "syntactic-play",
   "version": "1.0.0",
-  "description": "Interactive HTML/CSS Learning Platform",
+  "description": "Syntactic Play — Gamified Coding Education",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "sync": "npx cap sync android",
+    "android": "npx cap run android",
+    "studio": "npx cap open android"
   },
   "dependencies": {
-    "better-sqlite3": "^9.4.3",
+    "@capacitor-community/sqlite": "^6.0.2",
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "better-sqlite3": "^12.10.0",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "nodemon": "^3.0.0"
   }
 }

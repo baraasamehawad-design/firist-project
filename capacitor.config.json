@@ -1,0 +1,13 @@
+{
+  "appId": "com.syntacticplay.app",
+  "appName": "Syntactic Play",
+  "webDir": "public",
+  "plugins": {
+    "CapacitorSQLite": {
+      "androidIsEncryption": false,
+      "androidBiometric": {
+        "biometricAuth": false
+      }
+    }
+  }
+}
